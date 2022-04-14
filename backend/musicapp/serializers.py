@@ -15,7 +15,7 @@ class ArtistSerializer(serializers.ModelSerializer):
     model = Artist
     # The id is automatically created as a primary key by our Django model
     # and we can included it here as well.
-    fields = ('id','song', 'artist')
+    fields = ('id','song', 'artist','file')
 
 class RatingSerializer(serializers.ModelSerializer):
   class Meta:
