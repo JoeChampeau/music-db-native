@@ -33,12 +33,15 @@ export default class Song_lookup extends React.Component {
       formText: {
         song: "",
         artist: "",
-        rating: ""
+        rating: "",
+        file: null
       }
     };
     this.changeEditMode = this.changeEditMode.bind(this)
     this.changeCurrentUser = this.changeCurrentUser.bind(this)
   }
+
+  
 
   componentDidMount() {
     this.refreshList();
@@ -171,12 +174,15 @@ export default class Song_lookup extends React.Component {
     }
     let dest = "http://localhost:8000/api/artists/"
     this.setState({editSupText: ""})
+    console.log(this.state.formText.file)
     axios
-      .post(dest, {song: this.state.formText.song, artist: this.state.formText.artist})
+      .post(dest, {song: this.state.formText.song, artist: this.state.formText.artist,file: this.state.formText.file})
       .then((res) => {
         this.refreshList()
         this.setState({active: 0})
+     
       })
+     
   }
 
   renderSongs() {
@@ -288,6 +294,9 @@ export default class Song_lookup extends React.Component {
                   placeholder="Change Rating"
                 />
             </FormGroup>
+            
+
+
           </Form>
           <Button onClick={this.editSongRating} style={{marginRight: "1vw"}}>
               Submit
@@ -323,6 +332,17 @@ export default class Song_lookup extends React.Component {
                 placeholder=""
               />
             </FormGroup>
+
+            <FormGroup>
+              <Label for="file">file </Label>
+              <Input
+                type="file"
+                name="file"
+                value={this.state.formText.file}
+                onChange={this.handleChange}
+                placeholder=""
+              />
+            </FormGroup>
           </Form>
           <Button onClick={this.addSong}>
               Submit
@@ -332,6 +352,8 @@ export default class Song_lookup extends React.Component {
     }
     return editHtml
   }
+
+  
 
   render() {
     return(
@@ -358,4 +380,6 @@ export default class Song_lookup extends React.Component {
       </div>
     </div>
     );}
+
+    
 }
