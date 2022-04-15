@@ -12,9 +12,6 @@ function App() {
       <Song_lookup />
     </div>
   );
-
 }
-
-
 
 export default App;
