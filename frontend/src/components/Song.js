@@ -50,11 +50,11 @@ export default class Song extends React.Component {
     <li style={{textAlign: "left"}}>
       <span>{this.props.song} by {this.props.artist} is rated {this.props.average} ({this.props.count}) </span>
       <ButtonGroup>
-        <Button onClick={this.togglePlay}>
-          Play
-        </Button>
         <Button onClick={() => this.props.onChange(this.props.id)}>
           Edit
+        </Button>
+        <Button onClick={this.togglePlay}>
+          Play
         </Button>
       </ButtonGroup>
       <span style={{color: "green"}}>{this.state.isPlaying ? " Playing song!" : ""}</span>
