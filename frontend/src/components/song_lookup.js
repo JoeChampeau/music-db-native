@@ -199,7 +199,7 @@ export default class Song_lookup extends React.Component {
 
   renderSongs() {
     return Object.entries(this.state.songList).map(([key, value]) =>
-      <Song id={key} song={value.song} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
+      <Song id={key} song={value.song} file={value.file} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
     )
   }
 
@@ -253,10 +253,11 @@ export default class Song_lookup extends React.Component {
         let newlist = []
         for (const[key, value] of Object.entries(artists)) {
             let figures = this.calculateAverageRating(key)
-            newlist[key] = {song: value.song, artist: value.artist, av: figures[0], count: figures[1]}
+            newlist[key] = {song: value.song, artist: value.artist, av: figures[0], count: figures[1], file: value.file}
         }
 
         this.setState({ songList: newlist })
+        console.log(this.state.songList)
       })
       .catch((err) => console.log(err));
   }
@@ -272,7 +273,7 @@ export default class Song_lookup extends React.Component {
       .get("http://localhost:8000/api/artists/")
       .then((res) => {
         let artistList = []
-        res.data.map((songItem) => artistList[songItem.id] = {song: songItem.song, artist: songItem.artist})
+        res.data.map((songItem) => artistList[songItem.id] = {song: songItem.song, artist: songItem.artist, file: songItem.file})
         this.populateSongs(artistList)
       })
   };
