@@ -381,7 +381,7 @@ export default class Song_lookup extends React.Component {
       <div style={{textAlign: "right", position: "fixed", right: 0, top: 0}}>
         {this.loginBar()}
       </div>
-      <div style={{marginTop: 50}}>
+      <div style={{marginTop: 50 , marginRight : 50}}>
         Songs
         <div className="flex-container">
           <div>
