@@ -93,8 +93,8 @@ export default class Song_lookup extends React.Component {
       this.setState({editSupText: "All fields must be filled in!"})
       return
     }
-    if(this.state.formText.rating > 5 || this.state.formText.rating < 0) {
-      this.setState({editSupText: "Rating must be within the range [0,5]"})
+    if(this.state.formText.rating > 5 || this.state.formText.rating < 1) {
+      this.setState({editSupText: "Rating must be within the range [1,5]"})
       return
     }
     this.setState({editSupText: ""})
