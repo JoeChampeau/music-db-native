@@ -67,10 +67,10 @@ export default class Login extends React.Component {
                 />
               </FormGroup>
             </Form>
-            <Button onClick={() => this.edit(this.state.username, this.state.password, false)} style={{marginRight: "0.5vw"}}>
+            <Button onClick={() => this.edit(this.state.username, this.state.password, false)} style={{marginRight: "0.5vw", marginTop: "0.5vw"}}>
               Login
             </Button>
-            <Button onClick={() => this.edit(this.state.username, this.state.password, true)}>
+            <Button onClick={() => this.edit(this.state.username, this.state.password, true)} style={{marginRight: "0.5vw", marginTop: "0.5vw"}}>
               Sign Up
             </Button>
             <div style={{color: "red"}} key={this.props.supText}>{this.props.supText} </div>

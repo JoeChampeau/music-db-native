@@ -45,19 +45,28 @@ export default class Song extends React.Component {
     this.setState({ isPlaying: !isPlaying });
   };
 
+  deleteSong = () => {
+    this.state.audio.pause();
+    this.props.deleteSong(this.props.id)
+  }
   render() {
+    let playText = this.state.isPlaying ? <span style={{color:"lightgreen"}}>Play</span> : <span style={{color: "white"}}>Play</span>
     return(
-    <li style={{textAlign: "left"}}>
-      <span>{this.props.song} by {this.props.artist} is rated {this.props.average} ({this.props.count}) </span>
-      <ButtonGroup>
+    <li className="song-container" style={{textAlign: "left"}}>
+      <div style={{width: "200%"}}><b>{this.props.song}</b> by <b>{this.props.artist}</b> is rated:</div>
+      <div style={{width: "50%"}}><span className="rating">{this.props.average}</span> ({this.props.count})</div>
+      <div><ButtonGroup >
         <Button onClick={() => this.props.onChange(this.props.id)}>
           Edit
         </Button>
         <Button onClick={this.togglePlay}>
-          Play
+          {playText}
+        </Button>
+        <Button onClick={this.deleteSong}>
+              Delete
         </Button>
       </ButtonGroup>
-      <span style={{color: "green"}}>{this.state.isPlaying ? " Playing song!" : ""}</span>
+      </div>
     </li>)
   }
 }

@@ -5,6 +5,7 @@ import React from 'react';
 import Song_lookup from './components/song_lookup';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+document.body.style = 'background: whitesmoke;';
 
 function App() {
   return (

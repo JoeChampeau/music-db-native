@@ -17,6 +17,7 @@ import Song from "./Song"
 import Login from "./Login"
 import './s_lookup.css';
 import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers";
+import { unstable_renderSubtreeIntoContainer } from "react-dom";
 
 export default class Song_lookup extends React.Component {
   constructor(props) {
@@ -39,6 +40,7 @@ export default class Song_lookup extends React.Component {
     };
     this.changeEditMode = this.changeEditMode.bind(this)
     this.changeCurrentUser = this.changeCurrentUser.bind(this)
+    this.deleteSong = this.deleteSong.bind(this)
   }
 
   
@@ -91,6 +93,10 @@ export default class Song_lookup extends React.Component {
       this.setState({editSupText: "All fields must be filled in!"})
       return
     }
+    if(this.state.formText.rating > 5 || this.state.formText.rating < 0) {
+      this.setState({editSupText: "Rating must be within the range [0,5]"})
+      return
+    }
     this.setState({editSupText: ""})
     let dest = "http://localhost:8000/api/artists/"
     this.addOrUpdate(dest, this.state.currentSong, {song: this.state.formText.song, artist: this.state.formText.artist })
@@ -130,9 +136,9 @@ export default class Song_lookup extends React.Component {
       })
   }
 
-  deleteSong = () => {
+  deleteSong(song) {
     let dest = "http://localhost:8000/api/artists/"
-    dest = dest.concat(this.state.currentSong)
+    dest = dest.concat(song)
     axios
       .delete(dest)
       .then((res) => {
@@ -155,8 +161,8 @@ export default class Song_lookup extends React.Component {
     this.setState({formText: {song: "", artist: "", rating: ""}, editSupText: ""})
   }
 
-  checkDupSongs(name, artistName) {
-    if (name === "" || artistName === "") {
+  checkDupSongs(name, artistName, f) {
+    if (name === "" || artistName === "" || f === undefined) {
       return true
     }
     for (const[key, value] of Object.entries(this.state.songList)) {
@@ -170,13 +176,12 @@ export default class Song_lookup extends React.Component {
   
 
   addSong = () => {
-    if (this.checkDupSongs(this.state.formText.song, this.state.formText.artist)) {
+    if (this.checkDupSongs(this.state.formText.song, this.state.formText.artist, this.state.formText.file)) {
       this.setState({editSupText: "Invalid submission or song already exists!"})
       return
     }
     let dest = "http://localhost:8000/api/artists/"
     this.setState({editSupText: ""})
-    console.log(this.state.formText.file)
 
     let form_data = new FormData();
     form_data.append('file', this.state.formText.file, this.state.formText.file.name);
@@ -199,7 +204,7 @@ export default class Song_lookup extends React.Component {
 
   renderSongs() {
     return Object.entries(this.state.songList).map(([key, value]) =>
-      <Song id={key} song={value.song} file={value.file} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode}/>
+      <Song id={key} song={value.song} file={value.file} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode} deleteSong={this.deleteSong}/>
     )
   }
 
@@ -322,9 +327,6 @@ export default class Song_lookup extends React.Component {
           <Button onClick={this.editSongRating} style={{marginRight: "1vw"}}>
               Submit
           </Button>
-          <Button onClick={this.deleteSong}>
-              Delete
-          </Button>
           </div>
       );
     }
@@ -355,7 +357,7 @@ export default class Song_lookup extends React.Component {
             </FormGroup>
 
             <FormGroup>
-              <Label for="file">file </Label>
+              <Label for="file">MP3 File </Label>
               <Input
                 type="file"
                 name="file"
@@ -376,30 +378,31 @@ export default class Song_lookup extends React.Component {
   render() {
     return(
     <div style={{margin: 50}}>
-      <h1>Insert Site Title Here!</h1>
-      <div style={{margin: 50, textAlign: "left"}}>
-        <h2 style={{textAlign: "center"}}>Songs</h2>
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+      <div className="login">
+        {this.loginBar()}
+      </div>
+      <h1 style={{marginBottom:"80px"}}>Rate A Song!</h1>
+      <div style={{margin: 10, textAlign: "left"}}>
+        <h2 style={{marginLeft: "100px"}}>Songs</h2>
+        <div className="flex-container">
           <div>
-            <ul style={{listStyle: "none"}}>
+            <ul className="list">
               {this.renderSongs()}
             </ul>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
+          </div>
+          <div style={{backgroundColor: "whitesmoke"}}></div>
+        </div>
+        <div className="editBar">
+            {this.editBar()}
+            <br></br>
+        </div>
+        <div style={{margin: "10px", marginLeft: "20%"}}>
               <Button onClick={this.addSongActivate}>
                 Add Song
               </Button>
-            </div>
-          </div>
-          <div>
-            {this.editBar()}
-            <br></br>
-            <div style={{color: "red"}}>{this.state.editSupText}</div>
-          </div>
         </div>
       </div>
-      <div style={{display: 'flex', justifyContent: 'center'}}>
-        {this.loginBar()}
-      </div>
+      <div style={{color: "red"}}>{this.state.editSupText}</div>
     </div>
     );}
 
