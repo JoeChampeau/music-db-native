@@ -167,6 +167,8 @@ export default class Song_lookup extends React.Component {
     return false
   }
 
+  
+
   addSong = () => {
     if (this.checkDupSongs(this.state.formText.song, this.state.formText.artist)) {
       this.setState({editSupText: "Invalid submission or song already exists!"})
@@ -175,12 +177,22 @@ export default class Song_lookup extends React.Component {
     let dest = "http://localhost:8000/api/artists/"
     this.setState({editSupText: ""})
     console.log(this.state.formText.file)
+
+    let form_data = new FormData();
+    form_data.append('file', this.state.formText.file, this.state.formText.file.name);
+    form_data.append('song', this.state.formText.song);
+    form_data.append('artist', this.state.formText.artist);
+
     axios
-      .post(dest, {song: this.state.formText.song, artist: this.state.formText.artist,file: this.state.formText.file})
+      .post(dest, form_data, {headers: {
+        'content-type': 'multipart/form-data'
+      }})
       .then((res) => {
         this.refreshList()
         this.setState({active: 0})
-     
+      })
+      .catch((res) => {
+        console.log(res.toJSON())
       })
      
   }
@@ -209,6 +221,14 @@ export default class Song_lookup extends React.Component {
         formText: newForm
     });
   }
+
+  handleFileChange = (event) => {
+    let newForm = this.state.formText
+    newForm.file = event.target.files[0]
+    this.setState({
+        formText: newForm
+    });
+  };
 
   calculateAverageRating = (u) => {
     let average = 0
@@ -338,8 +358,7 @@ export default class Song_lookup extends React.Component {
               <Input
                 type="file"
                 name="file"
-                value={this.state.formText.file}
-                onChange={this.handleChange}
+                onChange={this.handleFileChange}
                 placeholder=""
               />
             </FormGroup>

@@ -16,9 +16,6 @@ class ArtistView(viewsets.ModelViewSet):
   serializer_class = ArtistSerializer
   # Todo.objects.all() retrieves all the Todo objects in the database.
   queryset = Artist.objects.all()
-
-  def create(self, request):
-    print("here")
     
 
 class RatingView(viewsets.ModelViewSet):
