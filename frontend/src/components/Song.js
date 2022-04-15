@@ -48,12 +48,12 @@ export default class Song extends React.Component {
     return(
     <li style={{textAlign: "left"}}>
       <span>{this.props.song} by {this.props.artist} is rated {this.props.average} ({this.props.count}) </span>
-      <button onClick={() => this.props.onChange(this.props.id)}>
+      <Button onClick={() => this.props.onChange(this.props.id)}>
                   Edit
-      </button>
-      <button onClick={this.togglePlay} style={{marginLeft: "0.5vw"}}>
+      </Button>
+      <Button onClick={this.togglePlay} style={{marginLeft: "0.5vw"}}>
                   Play
-      </button>
+      </Button>
       <span style={{color: "green"}}>{this.state.isPlaying ? " Playing song!" : ""}</span>
     </li>)
   }
