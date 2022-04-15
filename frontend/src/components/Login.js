@@ -40,9 +40,10 @@ export default class Login extends React.Component {
     if(this.props.username == "") {
       return(
         <div>
+          <Form inline>
             <Form>
-              <FormGroup>
-                <Label for="username">Username </Label>
+              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                <Label className="me-sm-2" for="username">Username</Label>
                 <Input
                   type="text"
                   name="username"
@@ -52,7 +53,9 @@ export default class Login extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Username"
                 />
-                <Label for="password"> Password </Label>
+              </FormGroup>
+              <FormGroup className="mb-2 me-sm-2 mb-sm-0">
+                <Label className="me-sm-2" for="password">Password</Label>
                 <Input
                   type="text"
                   name="password"
@@ -71,6 +74,7 @@ export default class Login extends React.Component {
               Sign Up
             </Button>
             <div style={{color: "red"}} key={this.props.supText}>{this.props.supText} </div>
+          </Form>
         </div>
       )
     }

@@ -373,30 +373,31 @@ export default class Song_lookup extends React.Component {
     return editHtml
   }
 
-  
-
   render() {
     return(
-    <div>
-      <div style={{textAlign: "right", position: "fixed", right: 0, top: 0}}>
-        {this.loginBar()}
-      </div>
+    <div style={{margin: 50}}>
+      <h1>Insert Site Title Here!</h1>
       <div style={{margin: 50, textAlign: "left"}}>
-        Songs
-        <div className="flex-container">
+        <h2 style={{textAlign: "center"}}>Songs</h2>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <div>
             <ul style={{listStyle: "none"}}>
               {this.renderSongs()}
             </ul>
-            <Button onClick={this.addSongActivate}>
-              Add Song
-            </Button>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Button onClick={this.addSongActivate}>
+                Add Song
+              </Button>
+            </div>
           </div>
           <div>
             {this.editBar()}
             <div style={{color: "red"}}>{this.state.editSupText}</div>
           </div>
         </div>
+      </div>
+      <div style={{display: 'flex', justifyContent: 'center'}}>
+        {this.loginBar()}
       </div>
     </div>
     );}
