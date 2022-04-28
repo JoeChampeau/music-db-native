@@ -1,23 +1,15 @@
 import React from "react";
-// We would like to use a modal (small window) to show details of a task.
 import {
+  Text,
+  View,
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Form,
-  FormGroup,
-  Input,
-  Label,
-} from "reactstrap";
+  TextInput
+} from "react-native";
 
 import axios from "axios"
 import Song from "./Song"
 import Login from "./Login"
-import './s_lookup.css';
-import { toHaveDisplayValue } from "@testing-library/jest-dom/dist/matchers";
-import { unstable_renderSubtreeIntoContainer } from "react-dom";
+import styles from './style';
 
 export default class Song_lookup extends React.Component {
   constructor(props) {
@@ -35,7 +27,6 @@ export default class Song_lookup extends React.Component {
         song: "",
         artist: "",
         rating: "",
-        file: null
       }
     };
     this.changeEditMode = this.changeEditMode.bind(this)
@@ -43,7 +34,6 @@ export default class Song_lookup extends React.Component {
     this.deleteSong = this.deleteSong.bind(this)
   }
 
-  
 
   componentDidMount() {
     this.refreshList();
@@ -184,7 +174,6 @@ export default class Song_lookup extends React.Component {
     this.setState({editSupText: ""})
 
     let form_data = new FormData();
-    form_data.append('file', this.state.formText.file, this.state.formText.file.name);
     form_data.append('song', this.state.formText.song);
     form_data.append('artist', this.state.formText.artist);
 
@@ -204,7 +193,7 @@ export default class Song_lookup extends React.Component {
 
   renderSongs() {
     return Object.entries(this.state.songList).map(([key, value]) =>
-      <Song id={key} song={value.song} file={value.file} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode} deleteSong={this.deleteSong}/>
+      <Song id={key} song={value.song} artist={value.artist} average={value.av} count={value.count} onChange={this.changeEditMode} deleteSong={this.deleteSong}/>
     )
   }
 
@@ -218,22 +207,13 @@ export default class Song_lookup extends React.Component {
     return returnRat
   }
 
-  handleChange = (event) => {
-    let {name, value} = event.target
+  handleChange(name, value) {
     let newForm = this.state.formText
     newForm[name] = value
     this.setState({
         formText: newForm
     });
   }
-
-  handleFileChange = (event) => {
-    let newForm = this.state.formText
-    newForm.file = event.target.files[0]
-    this.setState({
-        formText: newForm
-    });
-  };
 
   calculateAverageRating = (u) => {
     let average = 0
@@ -258,7 +238,7 @@ export default class Song_lookup extends React.Component {
         let newlist = []
         for (const[key, value] of Object.entries(artists)) {
             let figures = this.calculateAverageRating(key)
-            newlist[key] = {song: value.song, artist: value.artist, av: figures[0], count: figures[1], file: value.file}
+            newlist[key] = {song: value.song, artist: value.artist, av: figures[0], count: figures[1]}
         }
 
         this.setState({ songList: newlist })
@@ -268,17 +248,11 @@ export default class Song_lookup extends React.Component {
   }
 
   refreshList = () => {
-    // We are using the axios library for making HTTP requests.
-    // Here is a GET request to our api/todos path.
-    // If it succeeds, we set the todoList to the resolved data.
-    // Otherwise, we catch the error and print it to the console (rejected data).
-    // We are using async calls here. Please refer to the JavaScript
-    // tutorial for how they work.
     axios
       .get("http://localhost:8000/api/artists/")
       .then((res) => {
         let artistList = []
-        res.data.map((songItem) => artistList[songItem.id] = {song: songItem.song, artist: songItem.artist, file: songItem.file})
+        res.data.map((songItem) => artistList[songItem.id] = {song: songItem.song, artist: songItem.artist})
         this.populateSongs(artistList)
       })
   };
@@ -287,89 +261,78 @@ export default class Song_lookup extends React.Component {
     let editHtml = ""
     if (this.state.active == 1){
       editHtml = (
-        <div className="editBar">
-          <b>Edit Song/Rating </b>
-        <Form>
-            <FormGroup>
-              <Label for="song">Title </Label>
-              <Input
-                type="text"
+        <View style={styles.editBar}>
+          <Text style={{fontWeight: "bold"}}>Edit Song/Rating </Text>
+        <View>
+            <View>
+              <Text>Title </Text>
+              <TextInput
                 name="song"
                 value={this.state.formText.song}
-                onChange={this.handleChange}
+                onChangeText={(text) => {this.handleChange("song", text)}}
                 placeholder="Change Song Name"
               />
-            </FormGroup>
-            <FormGroup>
-              <Label for="artist">Artist </Label>
-              <Input
-                type="text"
+            </View>
+            <View>
+              <Text>Artist </Text>
+              <TextInput
                 name="artist"
                 value={this.state.formText.artist}
-                onChange={this.handleChange}
+                onChangeText={(text) => {this.handleChange("artist", text)}}
                 placeholder="Change Artist"
               />
-            </FormGroup>
-            <FormGroup>
-              <Label for="rating">Rating </Label>
-                <Input
-                  type="number"
+            </View>
+            <View>
+              <Text>Rating </Text>
+                <TextInput
                   name="rating"
                   value={this.state.formText.rating}
-                  onChange={this.handleChange}
+                  onChangeText={(text) => {this.handleChange("rating", text)}}
                   placeholder="Change Rating"
+                  keyboardType="numeric"
                 />
-            </FormGroup>
+            </View>
             
 
 
-          </Form>
-          <Button onClick={this.editSongRating} style={{marginRight: "1vw"}}>
-              Submit
-          </Button>
-          </div>
+          </View>
+          <Button 
+            onPress={this.editSongRating} 
+            style={{marginRight: "1vw"}}
+            title="Submit"
+          />
+          </View>
       );
     }
     else if (this.state.active == 2) {
       editHtml = (
-        <div className="editBar">
-          <b>Add Song </b>
-        <Form>
-            <FormGroup>
-              <Label for="song">Title </Label>
-              <Input
-                type="text"
+        <View style={styles.editBar}>
+          <Text style={{fontWeight: "bold"}}>Add Song </Text>
+        <View>
+            <View>
+              <Text>Title </Text>
+              <TextInput
                 name="song"
                 value={this.state.formText.song}
-                onChange={this.handleChange}
+                onChangeText={(text) => {this.handleChange("song", text)}}
                 placeholder=""
               />
-            </FormGroup>
-            <FormGroup>
-              <Label for="artist">Artist </Label>
-              <Input
-                type="text"
+            </View>
+            <View>
+              <Text>Artist </Text>
+              <TextInput
                 name="artist"
                 value={this.state.formText.artist}
-                onChange={this.handleChange}
+                onChangeText={(text) => {this.handleChange("artist", text)}}
                 placeholder=""
               />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="file">MP3 File </Label>
-              <Input
-                type="file"
-                name="file"
-                onChange={this.handleFileChange}
-                placeholder=""
-              />
-            </FormGroup>
-          </Form>
-          <Button onClick={this.addSong}>
-              Submit
-          </Button>
-          </div>
+            </View>
+          </View>
+          <Button 
+            onPress={this.addSong}
+            title="Submit"
+          />
+          </View>
       );
     }
     return editHtml
@@ -377,33 +340,32 @@ export default class Song_lookup extends React.Component {
 
   render() {
     return(
-    <div style={{margin: 50}}>
-      <div className="login">
+    <View style={{margin: 50}}>
+      <View style={styles.login}>
         {this.loginBar()}
-      </div>
-      <h1 style={{marginBottom:"80px"}}>Rate A Song!</h1>
-      <div style={{margin: 10, textAlign: "left"}}>
-        <h2 style={{marginLeft: "100px"}}>Songs</h2>
-        <div className="flex-container">
-          <div>
-            <ul className="list">
+      </View>
+      <Text style={{marginBottom:"80px"}}>Rate A Song!</Text>
+      <View style={{margin: 10, textAlign: "left"}}>
+        <Text style={{marginLeft: "100px"}}>Songs</Text>
+        <View style={styles.flex_container}>
+          <View style={styles.flex_view}>
               {this.renderSongs()}
-            </ul>
-          </div>
-          <div style={{backgroundColor: "whitesmoke"}}></div>
-        </div>
-        <div className="editBar">
+          </View>
+          <View style={{backgroundColor: "whitesmoke"}}></View>
+        </View>
+        <View style={styles.editBar}>
             {this.editBar()}
-            <br></br>
-        </div>
-        <div style={{margin: "10px", marginLeft: "20%"}}>
-              <Button onClick={this.addSongActivate}>
-                Add Song
-              </Button>
-        </div>
-      </div>
-      <div style={{color: "red"}}>{this.state.editSupText}</div>
-    </div>
+            <Text>{"\n"}</Text>
+        </View>
+        <View style={{margin: "10px", marginLeft: "20%"}}>
+              <Button 
+                onPress={this.addSongActivate}
+                title="Add Song"
+              />
+        </View>
+      </View>
+      <View style={{color: "red"}}>{this.state.editSupText}</View>
+    </View>
     );}
 
     
